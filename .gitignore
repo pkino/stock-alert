@@ -1,0 +1,26 @@
+# Node modules
+node_modules/
+package-lock.json
+
+# Clasp
+.clasp.json
+.clasprc.json
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# Environment
+.env
+.env.local
