@@ -51,7 +51,7 @@ jobs:
             github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
-              repo: context.repo.name,
+              repo: context.repo.repo,
               body: '✅ Google Apps Script へのデプロイが完了しました！'
             })
 
@@ -63,6 +63,6 @@ jobs:
             github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
-              repo: context.repo.name,
+              repo: context.repo.repo,
               body: '❌ Google Apps Script へのデプロイに失敗しました。ログを確認してください。'
             })
