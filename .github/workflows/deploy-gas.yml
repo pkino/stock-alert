@@ -30,11 +30,18 @@ jobs:
         env:
           CLASPRC_JSON: ${{ secrets.CLASPRC_JSON }}
 
+      - name: Create .clasp.json
+        run: |
+          cat > .clasp.json <<EOF
+          {
+            "scriptId": "${{ secrets.SCRIPT_ID }}",
+            "rootDir": "./src"
+          }
+          EOF
+
       - name: Deploy to GAS
         run: |
           npm run push
-        env:
-          SCRIPT_ID: ${{ secrets.SCRIPT_ID }}
 
       - name: Comment on PR
         uses: actions/github-script@v7

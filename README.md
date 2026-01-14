@@ -61,14 +61,25 @@ clasp create --type standalone --title "Stock Alert"
 
 1. Google Apps Script のエディタでプロジェクトを開く
 2. プロジェクト設定から「スクリプトID」をコピー
-3. `.clasp.json` ファイルの `scriptId` を更新
+3. `.clasp.json` をテンプレートから作成：
 
-```json
+```bash
+cp .clasp.json.template .clasp.json
+# エディタで .clasp.json を開いて YOUR_SCRIPT_ID_HERE を実際のIDに置き換え
+```
+
+または、コマンドで直接作成：
+
+```bash
+cat > .clasp.json <<EOF
 {
-  "scriptId": "YOUR_SCRIPT_ID_HERE",
+  "scriptId": "YOUR_ACTUAL_SCRIPT_ID",
   "rootDir": "./src"
 }
+EOF
 ```
+
+**注意**: `.clasp.json` は `.gitignore` に含まれているため、コミットされません。
 
 #### 2.4 初回プッシュ
 
