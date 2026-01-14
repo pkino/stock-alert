@@ -4,10 +4,8 @@
 
 /**
  * 共通：在庫月数アラート通知
- * - メール内で「ワンクリックでコピー」は出来ないため、
- *   ①商品名はリンクにしない
- *   ②行URLを生テキストで出す（選択→コピーしやすい）
- *   ③「コピー用（TSV）」ブロックも併記
+ * - 商品名と平均月数を2行表示
+ * - 平均月数にスプレッドシートへのハイパーリンクを設定
  */
 function notifyAvgStockAlert_(opts) {
   const {
@@ -83,25 +81,18 @@ function notifyAvgStockAlert_(opts) {
 
   if (!hits.length) return;
 
-  // HTMLダイジェスト：商品名はリンクにしない／URLを生で出す
+  // HTMLダイジェスト：商品名と平均月数を2行で表示、月数にリンクを付ける
   const digest = hits.slice(0, digestMax).map(h => {
     return `
       <li style="margin-bottom:8px;">
-        <div><b>${escapeHtml(h.name)}</b>（平均 ${h.avg.toFixed(1)} ヶ月）</div>
-        <div style="font-size:12px;color:#555;">
-          行URL（コピー用）: <span style="font-family:monospace;">${escapeHtml(h.link)}</span>
-        </div>
+        <div><b>${escapeHtml(h.name)}</b></div>
+        <div>平均 <a href="${h.link}">${h.avg.toFixed(1)} ヶ月</a></div>
       </li>`;
   }).join('');
 
   const omitted = hits.length > digestMax
     ? `<p style="color:#888;">…ほか <b>${hits.length - digestMax} 件</b> 省略</p>`
     : '';
-
-  // コピペしやすいTSV（Excel/スプシに貼れる）
-  const tsv = hits.slice(0, digestMax).map(h =>
-    `${String(h.name).replace(/\t/g, ' ')}\t${h.link}\t${h.avg.toFixed(1)}`
-  ).join('\n');
 
   const subject = `【在庫アラート】${subjectPrefix} 平均在庫月数 ≤ ${avgThreshold}：${hits.length}件`;
 
@@ -115,11 +106,6 @@ function notifyAvgStockAlert_(opts) {
     <p>▼ダイジェスト（最大 ${digestMax} 件）</p>
     <ul style="padding-left:18px;">${digest}</ul>
     ${omitted}
-
-    <hr>
-
-    <p style="margin:8px 0 4px;"><b>▼コピー用（TSV）</b>：スプレッドシートに貼り付け可</p>
-    <pre style="font-family:monospace;font-size:12px;white-space:pre-wrap;border:1px solid #ddd;padding:10px;border-radius:6px;">${escapeHtml(tsv)}</pre>
 
     <p style="font-size:0.85em;color:#666;">自動通知 / Apps Script</p>
   `;
