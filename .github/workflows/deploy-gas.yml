@@ -27,9 +27,25 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Validate secrets
+        run: |
+          if [ -z "$CLASPRC_JSON" ]; then
+            echo "Error: CLASPRC_JSON secret is not set."
+            echo "Run 'clasp login' locally, then copy ~/.clasprc.json contents to a GitHub secret named CLASPRC_JSON."
+            exit 1
+          fi
+          if [ -z "$SCRIPT_ID" ]; then
+            echo "Error: SCRIPT_ID secret is not set."
+            echo "Copy your Google Apps Script project ID to a GitHub secret named SCRIPT_ID."
+            exit 1
+          fi
+        env:
+          CLASPRC_JSON: ${{ secrets.CLASPRC_JSON }}
+          SCRIPT_ID: ${{ secrets.SCRIPT_ID }}
+
       - name: Setup clasp credentials
         run: |
-          echo "$CLASPRC_JSON" > ~/.clasprc.json
+          printf '%s' "$CLASPRC_JSON" > ~/.clasprc.json
         env:
           CLASPRC_JSON: ${{ secrets.CLASPRC_JSON }}
 
